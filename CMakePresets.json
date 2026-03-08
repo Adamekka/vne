@@ -1,0 +1,24 @@
+{
+    "version": 3,
+    "configurePresets": [
+        {
+            "name": "clang-homebrew",
+            "displayName": "Homebrew LLVM Clang",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/build",
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "/opt/homebrew/opt/llvm/bin/clang",
+                "CMAKE_CXX_COMPILER": "/opt/homebrew/opt/llvm/bin/clang++",
+                "CMAKE_CXX_STANDARD_LIBRARY": "libc++",
+                "CMAKE_CXX_STDLIB_MODULES_JSON": "/opt/homebrew/opt/llvm/lib/c++/libc++.modules.json",
+                "CMAKE_OSX_SYSROOT": "macosx"
+            }
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "clang-homebrew",
+            "configurePreset": "clang-homebrew"
+        }
+    ]
+}
