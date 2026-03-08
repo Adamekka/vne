@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+query_drivers='/nix/store/*/bin/clang++,/opt/homebrew/opt/llvm/bin/clang++'
+
+script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+repo_root="$(cd -- "${script_dir}/.." && pwd)"
+
+if [ -n "${IN_NIX_SHELL:-}" ] && command -v clangd >/dev/null 2>&1; then
+    exec clangd "--query-driver=${query_drivers}" "$@"
+fi
+
+if command -v nix >/dev/null 2>&1; then
+    exec nix develop "path:${repo_root}" --command clangd "--query-driver=${query_drivers}" "$@"
+fi
+
+if command -v clangd >/dev/null 2>&1; then
+    exec clangd "--query-driver=${query_drivers}" "$@"
+fi
+
+printf 'error: clangd is not on PATH and nix is unavailable\n' >&2
+exit 1

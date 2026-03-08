@@ -1,5 +1,5 @@
 {
-    "clangd.path": "/opt/homebrew/opt/llvm/bin/clangd",
+    "clangd.path": "${workspaceFolder}/scripts/run-clangd",
     "clangd.onConfigChanged": "restart",
     "C_Cpp.intelliSenseEngine": "disabled",
     "C_Cpp.errorSquiggles": "disabled",
@@ -8,5 +8,6 @@
     },
     "[cpp]": {
         "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd"
-    }
+    },
+    "nixEnvPicker.envFile": "${workspaceFolder}${/}flake.nix"
 }

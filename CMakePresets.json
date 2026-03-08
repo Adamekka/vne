@@ -1,13 +1,26 @@
 {
-    "version": 3,
+    "version": 6,
     "configurePresets": [
+        {
+            "name": "ninja-base",
+            "hidden": true,
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/build"
+        },
+        {
+            "name": "clang-nix",
+            "displayName": "Nix LLVM Clang 22",
+            "inherits": "ninja-base",
+            "cacheVariables": {
+                "CMAKE_CXX_COMPILER": "clang++",
+                "CMAKE_CXX_STANDARD_LIBRARY": "libc++"
+            }
+        },
         {
             "name": "clang-homebrew",
             "displayName": "Homebrew LLVM Clang",
-            "generator": "Ninja",
-            "binaryDir": "${sourceDir}/build",
+            "inherits": "ninja-base",
             "cacheVariables": {
-                "CMAKE_C_COMPILER": "/opt/homebrew/opt/llvm/bin/clang",
                 "CMAKE_CXX_COMPILER": "/opt/homebrew/opt/llvm/bin/clang++",
                 "CMAKE_CXX_STANDARD_LIBRARY": "libc++",
                 "CMAKE_CXX_STDLIB_MODULES_JSON": "/opt/homebrew/opt/llvm/lib/c++/libc++.modules.json",
@@ -16,6 +29,10 @@
         }
     ],
     "buildPresets": [
+        {
+            "name": "clang-nix",
+            "configurePreset": "clang-nix"
+        },
         {
             "name": "clang-homebrew",
             "configurePreset": "clang-homebrew"

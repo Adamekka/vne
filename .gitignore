@@ -13,7 +13,9 @@ _deps
 CMakeUserPresets.json
 
 .cache/
+.direnv/
 /build/
 /docs/
+/result
 a.out
 /visual-novel-engine
