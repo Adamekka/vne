@@ -19,7 +19,7 @@ cmake --build --preset clang-nix
 Run the binary:
 
 ```sh
-./build/visual-novel-engine
+./visual-novel-engine
 ```
 
 Build the package through Nix:
@@ -43,6 +43,10 @@ Configure and build:
 cmake --preset clang-homebrew
 cmake --build --preset clang-homebrew
 ```
+
+## Windows
+
+Goyslop OS not supported and never will be.
 
 ## LSP / clangd
 
