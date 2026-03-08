@@ -6,16 +6,33 @@ query_drivers='/nix/store/*/bin/clang++,/opt/homebrew/opt/llvm/bin/clang++'
 script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 repo_root="$(cd -- "${script_dir}/.." && pwd)"
 
+compile_commands_dir=''
+for candidate in \
+    "${repo_root}/build/clang-homebrew" \
+    "${repo_root}/build/clang-nix" \
+    "${repo_root}/build"
+do
+    if [ -f "${candidate}/compile_commands.json" ]; then
+        compile_commands_dir="${candidate}"
+        break
+    fi
+done
+
+clangd_args=("--query-driver=${query_drivers}")
+if [ -n "${compile_commands_dir}" ]; then
+    clangd_args+=("--compile-commands-dir=${compile_commands_dir}")
+fi
+
 if [ -n "${IN_NIX_SHELL:-}" ] && command -v clangd >/dev/null 2>&1; then
-    exec clangd "--query-driver=${query_drivers}" "$@"
+    exec clangd "${clangd_args[@]}" "$@"
 fi
 
 if command -v nix >/dev/null 2>&1; then
-    exec nix develop "path:${repo_root}" --command clangd "--query-driver=${query_drivers}" "$@"
+    exec nix develop "path:${repo_root}" --command clangd "${clangd_args[@]}" "$@"
 fi
 
 if command -v clangd >/dev/null 2>&1; then
-    exec clangd "--query-driver=${query_drivers}" "$@"
+    exec clangd "${clangd_args[@]}" "$@"
 fi
 
 printf 'error: clangd is not on PATH and nix is unavailable\n' >&2

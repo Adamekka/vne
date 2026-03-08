@@ -4,13 +4,18 @@
         {
             "name": "ninja-base",
             "hidden": true,
-            "generator": "Ninja",
-            "binaryDir": "${sourceDir}/build"
+            "generator": "Ninja"
         },
         {
             "name": "clang-nix",
             "displayName": "Nix LLVM Clang 22",
             "inherits": "ninja-base",
+            "binaryDir": "${sourceDir}/build/clang-nix",
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Linux"
+            },
             "cacheVariables": {
                 "CMAKE_CXX_COMPILER": "clang++",
                 "CMAKE_CXX_STANDARD_LIBRARY": "libc++"
@@ -20,6 +25,12 @@
             "name": "clang-homebrew",
             "displayName": "Homebrew LLVM Clang",
             "inherits": "ninja-base",
+            "binaryDir": "${sourceDir}/build/clang-homebrew",
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Darwin"
+            },
             "cacheVariables": {
                 "CMAKE_CXX_COMPILER": "/opt/homebrew/opt/llvm/bin/clang++",
                 "CMAKE_CXX_STANDARD_LIBRARY": "libc++",
