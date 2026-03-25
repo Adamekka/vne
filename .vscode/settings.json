@@ -1,7 +1,6 @@
 {
     "clangd.path": "${workspaceFolder}/scripts/run-clangd",
     "clangd.onConfigChanged": "restart",
-    "cmake.useCMakePresets": "always",
     "cmake.configureOnOpen": false,
     "C_Cpp.intelliSenseEngine": "disabled",
     "C_Cpp.errorSquiggles": "disabled",

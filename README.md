@@ -1,6 +1,6 @@
 # visual-novel-engine
 
-This project uses C++26 modules with `import std;`, so it needs a recent Clang toolchain and the Ninja generator.
+This project requires a recent Clang toolchain.
 
 ## NixOS / Linux
 
@@ -12,8 +12,8 @@ Setup and build:
 
 ```sh
 nix develop "path:."
-cmake --preset clang-nix
-cmake --build --preset clang-nix
+cmake -B build -G Ninja
+cmake --build build
 ```
 
 Run the binary:
@@ -40,8 +40,12 @@ brew install llvm cmake ninja
 Configure and build:
 
 ```sh
-cmake --preset clang-homebrew
-cmake --build --preset clang-homebrew
+cmake -B build -G Ninja \
+  -DCMAKE_C_COMPILER=/opt/homebrew/opt/llvm/bin/clang \
+  -DCMAKE_CXX_COMPILER=/opt/homebrew/opt/llvm/bin/clang++ \
+  -DCMAKE_CXX_STANDARD_LIBRARY=libc++ \
+  -DCMAKE_OSX_SYSROOT=macosx
+cmake --build build
 ```
 
 ## Windows
@@ -52,7 +56,7 @@ Goyslop OS not supported and never will be.
 
 - VS Code is already configured to use `scripts/run-clangd`
 - Install the `llvm-vs-code-extensions.vscode-clangd` extension
-- Run a configure step first so `build/compile_commands.json` exists
+- Run a configure step first so the repo-root `compile_commands.json` symlink exists
 - If clangd shows stale diagnostics, restart clangd or reload the editor window
 
-For other editors, point clangd at `scripts/run-clangd` and use `build/` as the compilation database directory.
+For other editors, point clangd at `scripts/run-clangd`, or run clangd from the repo root so it picks up `compile_commands.json` automatically.

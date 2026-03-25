@@ -7,16 +7,9 @@ script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 repo_root="$(cd -- "${script_dir}/.." && pwd)"
 
 compile_commands_dir=''
-for candidate in \
-    "${repo_root}/build/clang-homebrew" \
-    "${repo_root}/build/clang-nix" \
-    "${repo_root}/build"
-do
-    if [ -f "${candidate}/compile_commands.json" ]; then
-        compile_commands_dir="${candidate}"
-        break
-    fi
-done
+if [ -f "${repo_root}/build/compile_commands.json" ]; then
+    compile_commands_dir="${repo_root}/build"
+fi
 
 clangd_args=("--query-driver=${query_drivers}")
 if [ -n "${compile_commands_dir}" ]; then
