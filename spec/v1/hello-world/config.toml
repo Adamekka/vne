@@ -1,0 +1,11 @@
+[window]
+name = "Hello World!"
+width = 800
+height = 600
+resizable = false
+fullscreen = false
+
+[audio]
+master_volume = 0
+music_volume = 0
+sfx_volume = 0
