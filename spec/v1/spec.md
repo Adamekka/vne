@@ -1,4 +1,4 @@
-# VNE (Visual Novel Engine) Specification v1.0
+# VNE (Visual Novel Engine) Specification v1
 
 This specification defines the syntax and deterministic execution rules for the VNE script format. It is strictly limited to sequential logic, asset triggering, and markdown script branching. Global variable definitions and persistent state schemas are handled externally (e.g., via TOML) and are outside the scope of this file format.
 
@@ -15,9 +15,9 @@ This specification defines the syntax and deterministic execution rules for the 
 ## 2. Lexical Elements & Syntax
 
 **A. Labels (Jump Targets)**
-Defines a hashable entry point in the script. The C++ parser maps the kebab-case string to the line number of the script file.
+Defines a hashable entry point in the script. The C++ parser maps the label string to the line number of the script file.
 
-- **Syntax:** `# some-scene` or `## some-branch`
+- **Syntax:** One or more leading `#` characters followed by a label name using letters, digits, `_`, or `-`, e.g. `# some-scene`, `## some_branch`, or `### Branch3`.
 - **Engine Action:** Registers the target in the active jump table. No execution cost during runtime.
 
 **B. Dialogue & Narration**
@@ -43,8 +43,9 @@ Lines prefixed with `>` bypass the dialogue buffer and are routed directly to th
 
 - `> jmp [](#target-label)`: Immediately sets the IP to the specified label. Does not yield.
 - `> jmp [](another-scenario.md)`: Loads another markdown script file and sets the IP to its first executable line after the version header. Does not yield.
-- `> inc some_var`: Increments the specified state variable by 1.
-- _(Note: Operations like `dec`, `set`, or `toggle` can follow this exact signature)._
+- `> set some_var 5`: Sets the specified state variable to the integer value.
+- `> add some_var 5`: Adds the integer value to the specified state variable.
+- `> add some_var -5`: Adds the signed integer value to the specified state variable.
 
 **Conditionals (`if` / `endif`)**
 Evaluates state to gate script execution.
@@ -56,19 +57,23 @@ Evaluates state to gate script execution.
 **Visuals & Audio**
 Triggers engine subsystem calls. Optional arguments dictate asynchronous rendering transformations.
 
-- `> bg [action] [asset_id] [transition?] [duration?]`
-  - _Example:_ `> bg set street_evening fade 1.5s`
-- `> sprite [action] [character_id] [expression] [position] [transition?] [duration?] [easing?]`
-  - _Example:_ `> sprite show bob happy left slide_in 0.5s ease_out`
-  - _Example:_ `> sprite set bob surprised left` (Updates existing sprite state).
-- `> audio [action] [asset_id] [loop_flag?]`
-  - _Example:_ `> audio play bgm_calm loop`
-  - _Example:_ `> audio stop bgm_calm`
+- `> audio play [path] [loop_flag?]`
+- `> audio resume`
+- `> audio pause`
+- `> audio stop`
+  - _Example:_ `> audio play bgm_calm.ogg loop`
+- `> bg show [path] [transition?] [duration?]`
+- `> bg hide`
+  - _Example:_ `> bg show image.png fade 1.5s`
+- `> sprite show [position] [path] [transition?] [duration?]`
+- `> sprite hide [position]`
+  - _Example:_ `> sprite show left bob.png slide_in_left 0.5s`
 
 ### Timing
 
-- `> wait [duration]s`
+- `> wait [duration][s?]`
   - _Example:_ `> wait 2.0s`
+  - The `s` suffix is optional for all duration arguments.
   - **Engine Action:** Halts the IP and yields script execution to the engine's timer subsystem. Resumes automatically without user input when the duration expires.
 
 ---

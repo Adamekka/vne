@@ -1,5 +1,5 @@
 <!-- v1 -->
 
-# Another Scenario
+# another-scenario
 
 The story continues...

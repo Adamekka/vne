@@ -60,12 +60,14 @@ set(VNE_CXX_FLAGS
 
 # MARK: Dependencies
 
+include(FetchContent)
+
 set(RAYLIB_VERSION 5.5)
+
+find_package(Microsoft.GSL CONFIG REQUIRED)
 find_package(raylib ${RAYLIB_VERSION} QUIET)
 
 if(NOT raylib_FOUND)
-    include(FetchContent)
-
     FetchContent_Declare(
         raylib
         DOWNLOAD_EXTRACT_TIMESTAMP OFF
@@ -97,5 +99,10 @@ set_target_properties(visual-novel-engine PROPERTIES
 )
 target_compile_options(visual-novel-engine PRIVATE ${VNE_CXX_FLAGS})
 target_link_options(visual-novel-engine PRIVATE -fsanitize=address -fsanitize=undefined)
-target_link_libraries(visual-novel-engine PRIVATE raylib)
+target_link_libraries(
+    visual-novel-engine
+    PRIVATE
+        Microsoft.GSL::GSL
+        raylib
+)
 install(TARGETS visual-novel-engine RUNTIME DESTINATION bin)
