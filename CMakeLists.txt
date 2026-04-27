@@ -62,7 +62,7 @@ set(VNE_CXX_FLAGS
 
 include(FetchContent)
 
-set(RAYLIB_VERSION 5.5)
+set(RAYLIB_VERSION 6.0)
 
 find_package(Microsoft.GSL CONFIG REQUIRED)
 find_package(raylib ${RAYLIB_VERSION} QUIET)
