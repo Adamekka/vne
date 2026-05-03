@@ -1,4 +1,5 @@
 #include "parser.hpp"
+#include "exhaustive_parser.hpp"
 #include <fstream>
 #include <print>
 

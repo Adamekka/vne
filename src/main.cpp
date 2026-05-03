@@ -8,8 +8,8 @@ auto main(int32_t argc, char* argv[]) -> std::int32_t {
         return 1;
     }
 
-    parser::Parser parser{std::filesystem::path{argv[1]}};
-    const auto script = parser.parse();
+    const parser::Parser parser{std::filesystem::path{argv[1]}};
+    const auto script{parser.parse()};
 
     InitWindow(800, 450, "Visual Novel Engine");
 
