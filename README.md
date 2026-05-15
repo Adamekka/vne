@@ -12,7 +12,7 @@ Setup and build:
 
 ```sh
 nix develop "path:."
-cmake -B build -G Ninja
+cmake -B build
 cmake --build build
 ```
 
@@ -34,13 +34,13 @@ nix build "path:."
 Install the toolchain:
 
 ```sh
-brew install llvm cmake ninja
+brew install llvm cmake
 ```
 
 Configure and build:
 
 ```sh
-cmake -B build -G Ninja \
+cmake -B build \
   -DCMAKE_C_COMPILER=/opt/homebrew/opt/llvm/bin/clang \
   -DCMAKE_CXX_COMPILER=/opt/homebrew/opt/llvm/bin/clang++ \
   -DCMAKE_CXX_STANDARD_LIBRARY=libc++ \

@@ -1,102 +1,39 @@
 {
-    description = "Visual novel engine development shell";
+  description = "C++ Flake";
 
-    inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+  inputs = {
+    flake-parts.url = "github:hercules-ci/flake-parts";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+  };
 
-    outputs = { nixpkgs, ... }:
-        let
-            systems = [
-                "x86_64-linux"
-                "aarch64-linux"
+  outputs = inputs@{ flake-parts, nixpkgs, ... }:
+    flake-parts.lib.mkFlake { inherit inputs; } {
+      systems = [ "x86_64-linux" "aarch64-linux" "aarch64-darwin" "x86_64-darwin" ];
+      perSystem =
+        { pkgs, ... }: {
+          devShells.default = pkgs.mkShell.override { stdenv = pkgs.clangStdenv; } {
+            packages = with pkgs; [
+              alsa-lib
+              clang-analyzer
+              clang-tools
+              cmake
+              libGL
+              libpulseaudio
+              libx11
+              libxcursor
+              libxext
+              libxi
+              libxinerama
+              libxrandr
             ];
-            forAllSystems = f:
-                nixpkgs.lib.genAttrs systems (system:
-                    let
-                        pkgs = import nixpkgs { inherit system; };
-                        llvm = pkgs.llvmPackages_22;
-                        compilerRtLibc = llvm."compiler-rt-libc";
-                        commonCxxFlags = pkgs.lib.concatStringsSep " " [
-                            "-idirafter ${pkgs.stdenv.cc.libc.dev}/include"
-                            "-isystem ${llvm.libcxx.dev}/include"
-                            "-isystem ${compilerRtLibc.dev}/include"
-                            "-isystem ${llvm.libcxx.dev}/include/c++/v1"
-                            "-D_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_EXTENSIVE"
-                        ];
-                        commonLdFlags = pkgs.lib.concatStringsSep " " [
-                            "-L${llvm.libcxx}/lib"
-                            "-Wl,-rpath,${llvm.libcxx}/lib"
-                        ];
-                    in
-                    f {
-                        inherit commonCxxFlags commonLdFlags;
-                        inherit pkgs system;
-                        inherit llvm;
-                    }
-                );
-        in {
-            devShells = forAllSystems ({ pkgs, commonCxxFlags, commonLdFlags, llvm, ... }: {
-                default = pkgs.mkShell {
-                    hardeningDisable = [
-                        "fortify"
-                        "fortify3"
-                    ];
 
-                    packages = [
-                        llvm.libcxxClang
-                        pkgs.cmake
-                        pkgs.ninja
-                        llvm.libcxx
-                        llvm.clang-tools
-                    ];
+            shellHook = ''
+              # libglvnd and miniaudio load graphics/audio backends at runtime.
+              export LD_LIBRARY_PATH="${pkgs.lib.makeLibraryPath (with pkgs; [ alsa-lib libpulseaudio ])}:/run/opengl-driver/lib''${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
 
-                    CXXFLAGS = commonCxxFlags;
-                    LDFLAGS = commonLdFlags;
-                };
-            });
-
-            packages = forAllSystems ({ pkgs, commonCxxFlags, commonLdFlags, llvm, ... }: {
-                default = llvm.libcxxStdenv.mkDerivation {
-                    pname = "visual-novel-engine";
-                    version = "0.1.0";
-                    src = pkgs.lib.cleanSourceWith {
-                        src = ./.;
-                        filter = path: type:
-                            let
-                                baseName = builtins.baseNameOf path;
-                            in
-                            !(
-                                baseName == ".direnv"
-                                || baseName == ".git"
-                                || baseName == "CMakeCache.txt"
-                                || baseName == "CMakeFiles"
-                                || baseName == "build"
-                                || pkgs.lib.hasPrefix "build-" baseName
-                                || baseName == "compile_commands.json"
-                                || baseName == "result"
-                            );
-                    };
-
-                    hardeningDisable = [
-                        "fortify"
-                        "fortify3"
-                    ];
-
-                    nativeBuildInputs = [
-                        llvm.libcxxClang
-                        pkgs.cmake
-                        pkgs.ninja
-                        llvm.libcxx
-                    ];
-
-                    CXXFLAGS = commonCxxFlags;
-                    LDFLAGS = commonLdFlags;
-
-                    cmakeGenerator = "Ninja";
-                    cmakeFlags = [
-                        "-DCMAKE_CXX_COMPILER=${llvm.libcxxClang}/bin/clang++"
-                        "-DCMAKE_CXX_STANDARD_LIBRARY=libc++"
-                    ];
-                };
-            });
+              echo 'Make sure `programs.nix-ld.enable` is set to true for LLDB to work.';
+            '';
+          };
         };
+    };
 }
