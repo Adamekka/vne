@@ -76,7 +76,7 @@ struct Label {
     static auto parse(std::string_view input) -> ParseResult<Label>;
 };
 
-// MARK: -  Audio
+// MARK: - Audio
 
 struct AudioPlay {
     std::filesystem::path path;

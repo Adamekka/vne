@@ -12,6 +12,14 @@ class ParsedScript {
         std::vector<Instruction::Value> instructions
     );
 
+    ParsedScript(const ParsedScript&) = delete;
+    ParsedScript(ParsedScript&&) = default;
+
+    ~ParsedScript() = default;
+
+    auto operator=(const ParsedScript&) -> ParsedScript& = delete;
+    auto operator=(ParsedScript&&) -> ParsedScript& = default;
+
     [[nodiscard]] auto get_instructions() const
         -> const std::vector<Instruction::Value>&;
 

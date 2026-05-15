@@ -64,7 +64,6 @@ include(FetchContent)
 
 set(RAYLIB_VERSION 6.0)
 
-find_package(Microsoft.GSL CONFIG REQUIRED)
 find_package(raylib ${RAYLIB_VERSION} QUIET)
 
 if(NOT raylib_FOUND)
@@ -102,7 +101,6 @@ target_link_options(visual-novel-engine PRIVATE -fsanitize=address -fsanitize=un
 target_link_libraries(
     visual-novel-engine
     PRIVATE
-        Microsoft.GSL::GSL
         raylib
 )
 install(TARGETS visual-novel-engine RUNTIME DESTINATION bin)

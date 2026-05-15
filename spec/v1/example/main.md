@@ -2,49 +2,61 @@
 
 # Main
 
-> bg show street_evening.png fade 1.5s
-> audio play bgm_calm.ogg loop
+> set rep_rena 10
+> bg show background_images/village_evening.png fade 1.5s
+> audio play music/orange-colored-time.mp3 loop
 
-The sun is setting. You see a familiar face approaching.
+The cicadas are screaming over the rice fields.
+The road back from the shrine is empty except for one familiar silhouette waiting by the drainage canal.
 
-> sprite show left bob_happy.png slide_in_left 0.5s
+> sprite show left sprites/rena_smile.png fade 0.5s
 
-**Bob**: "Hey! Long time no see."
+**Rena**: "You're late. The others almost started the game without you."
 
-> if rep_bob >= 5
+> if rep_rena >= 5
 
-[Greet him warmly](#warm-greet-bob)
+[Laugh and greet her like usual](#warm-greet-rena)
 
 > endif
 
-[Ignore him](#ignore-bob)
+[Ask why she is alone](#question-rena)
 
-## warm-greet-bob
+## warm-greet-rena
 
-> sprite show left bob_surprised.png
+> sprite show left sprites/rena_happy.png
 
-**Bob**: "Whoa, someone's in a good mood."
+**Rena**: "Ahaha. That's the spirit. If everyone smiles, nothing bad can happen tonight."
 
-> add rep_bob 1
+Her laugh is bright, but it stops all at once.
+Behind her, the shrine bell sways in the windless dusk.
+
+> add rep_rena 1
 > jmp [](#on-way-home)
 
-## ignore-bob
+## question-rena
 
-> sprite show left bob_sad.png
+> sprite show left sprites/rena_sad.png
 
-**Bob**: "Oh, I see how it is."
+**Rena**: "Alone?"
+
+She tilts her head, still smiling.
+
+**Rena**: "But you've been walking with someone this whole time."
 
 ## on-way-home
 
-> bg show street_night.png fade 1.5s
+> sprite show left sprites/rena_smile.png
+> bg show background_images/village_night.png fade 1.5s
 > audio stop
 
-The night falls as you continue on your way home, the encounter with Bob lingering in your thoughts.
-You continue walking, counting your coins.
-It seems like I have {coins} coins in my pocket.
+Night falls too quickly.
+The cicadas stop together, as if a hand closed around the village.
+You keep walking, thumb rubbing the old festival coins in your pocket.
+It seems like I have {coins} coins, but I only remember picking up one.
 
-The lights suddenly go out.
+The streetlamp above you flickers out.
 
-> wait 2.0s
-> audio play se_crash.ogg
+From the dark behind you, gravel crunches once.
+
+> audio play sound_effects/bell.mp3
 > jmp [](another-scenario.md)

@@ -1,7 +1,6 @@
 #include "instruction.hpp"
 #include <cassert>
 #include <charconv>
-#include <print>
 
 namespace parser {
 
@@ -45,18 +44,18 @@ constexpr auto normalize_transition_args(
         return;
     }
 
-    // TODO: Show error on screen
-
     if (duration.has_value()) {
-        std::println("Duration cannot be specified without a transition");
+        throw std::runtime_error{
+          "Duration cannot be specified without a transition"
+        };
         duration.reset();
         return;
     }
 
-    std::println(
-        "Transition specified without duration. Duration is required when a "
-        "transition is specified."
-    );
+    throw std::runtime_error{
+      "Transition specified without duration. Duration is required when a "
+      "transition is specified."
+    };
 
     transition.reset();
 }

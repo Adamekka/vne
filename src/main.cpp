@@ -1,5 +1,5 @@
+#include "engine/engine.hpp"
 #include "parser/parser.hpp"
-#include "raylib.h"
 #include <print>
 
 auto main(int32_t argc, char* argv[]) -> std::int32_t {
@@ -9,14 +9,6 @@ auto main(int32_t argc, char* argv[]) -> std::int32_t {
     }
 
     const parser::Parser parser{std::filesystem::path{argv[1]}};
-    const auto script{parser.parse()};
-
-    InitWindow(800, 450, "Visual Novel Engine");
-
-    while (!WindowShouldClose()) {
-        BeginDrawing();
-        EndDrawing();
-    }
-
-    CloseWindow();
+    engine::Engine engine{parser.parse()};
+    engine.run();
 }

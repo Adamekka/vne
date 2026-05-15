@@ -1,16 +1,21 @@
 #include "parser.hpp"
 #include "exhaustive_parser.hpp"
 #include <fstream>
-#include <print>
 
 namespace parser {
 
 Parser::Parser(std::filesystem::path path): path{std::move(path)} {}
 
 auto Parser::parse() const -> ParsedScript {
-    std::ifstream file{path};
+    auto script_path{this->path};
+
+    if (std::filesystem::is_directory(script_path)) {
+        script_path /= "main.md";
+    }
+
+    std::ifstream file{script_path};
     if (!file) {
-        throw std::runtime_error("Cannot open file: " + path.string());
+        throw std::runtime_error("Cannot open file: " + script_path.string());
     }
 
     auto content{std::make_unique<const std::string>(
@@ -62,8 +67,7 @@ auto Parser::parse() const -> ParsedScript {
         if (line_result) {
             result.emplace_back(std::move(*line_result));
         } else {
-            // TODO: Show error on screen
-            std::println("{}", line_result.error().message());
+            throw std::runtime_error{line_result.error().message()};
         }
     }
 
