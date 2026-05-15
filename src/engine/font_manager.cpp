@@ -11,6 +11,7 @@ auto FontManager::instance() -> FontManager& {
     return this->font;
 }
 
-FontManager::FontManager(): font(LoadFont("font.ttf")) {}
+FontManager::FontManager()
+    : font(LoadFont("font.ttf")) {}
 
 } // namespace engine

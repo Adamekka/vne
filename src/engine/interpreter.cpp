@@ -11,8 +11,9 @@
 
 namespace engine {
 
-Interpreter::Interpreter(Engine& engine, parser::ParsedScript script):
-    engine{engine}, script{std::move(script)} {
+Interpreter::Interpreter(Engine& engine, parser::ParsedScript script)
+    : engine{engine}
+    , script{std::move(script)} {
     this->prepare_script();
 }
 

@@ -3,8 +3,9 @@
 
 namespace parser {
 
-ParseError::ParseError(Kind kind, std::string_view input):
-    kind{kind}, input{input} {}
+ParseError::ParseError(Kind kind, std::string_view input)
+    : kind{kind}
+    , input{input} {}
 
 auto ParseError::message() const -> std::string {
     const auto description{[this] -> std::string_view {

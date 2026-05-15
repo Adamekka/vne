@@ -2,6 +2,7 @@
 
 namespace engine {
 
-Variable::Variable(Type value): value{value} {}
+Variable::Variable(Type value)
+    : value{value} {}
 
 } // namespace engine

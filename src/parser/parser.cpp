@@ -4,7 +4,8 @@
 
 namespace parser {
 
-Parser::Parser(std::filesystem::path path): path{std::move(path)} {}
+Parser::Parser(std::filesystem::path path)
+    : path{std::move(path)} {}
 
 auto Parser::parse() const -> ParsedScript {
     auto script_path{this->path};

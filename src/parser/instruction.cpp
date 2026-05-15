@@ -64,7 +64,8 @@ constexpr auto normalize_transition_args(
 
 // MARK: - Duration
 
-Duration::Duration(double value): value{value} {}
+Duration::Duration(double value)
+    : value{value} {}
 
 auto Duration::parse(
     std::string_view input, const std::string_view original_input
@@ -96,7 +97,8 @@ auto Duration::parse(
 
 // MARK: - Transition
 
-Transition::Transition(Value value): value{value} {}
+Transition::Transition(Value value)
+    : value{value} {}
 
 auto Transition::parse(
     std::string_view input, const std::string_view original_input
@@ -209,7 +211,8 @@ auto Target::parse(
 
 // MARK: - Version
 
-Version::Version(Value value): value{value} {}
+Version::Version(Value value)
+    : value{value} {}
 
 auto Version::parse(std::string_view input) -> ParseResult<Version> {
     if (input != "<!-- v1 -->") {
@@ -223,7 +226,8 @@ auto Version::parse(std::string_view input) -> ParseResult<Version> {
 
 // MARK: - Label
 
-Label::Label(LabelValue value): value{value} {}
+Label::Label(LabelValue value)
+    : value{value} {}
 
 auto Label::parse(LabelValue input) -> ParseResult<Label> {
     const std::string_view original_input{input};
@@ -268,8 +272,9 @@ auto Label::parse(LabelValue input) -> ParseResult<Label> {
 
 // MARK: - Audio
 
-AudioPlay::AudioPlay(std::filesystem::path path, bool loop):
-    path{std::move(path)}, loop{loop} {}
+AudioPlay::AudioPlay(std::filesystem::path path, bool loop)
+    : path{std::move(path)}
+    , loop{loop} {}
 
 auto AudioPlay::parse(
     std::string_view input, const std::string_view original_input
@@ -380,7 +385,10 @@ BackgroundShow::BackgroundShow(
     std::filesystem::path path,
     std::optional<Transition> transition,
     std::optional<Duration> duration
-): path{std::move(path)}, transition{transition}, duration{duration} {
+)
+    : path{std::move(path)}
+    , transition{transition}
+    , duration{duration} {
     normalize_transition_args(this->transition, this->duration);
 }
 
@@ -494,7 +502,10 @@ auto Background::parse(std::string_view input) -> ParseResult<Background> {
 
 VariableMutation::VariableMutation(
     Operation op, VariableName variable_name, EngineInt value
-): op{op}, variable_name{variable_name}, value{value} {}
+)
+    : op{op}
+    , variable_name{variable_name}
+    , value{value} {}
 
 auto VariableMutation::parse(std::string_view input)
     -> ParseResult<VariableMutation> {
@@ -598,7 +609,8 @@ auto Atom::parse(std::string_view input, const std::string_view original_input)
     return Atom{input};
 }
 
-Operator::Operator(Value value): value{value} {}
+Operator::Operator(Value value)
+    : value{value} {}
 
 auto Operator::parse(
     std::string_view input, const std::string_view original_input
@@ -632,7 +644,10 @@ auto Operator::parse(
     };
 }
 
-If::If(Atom lhs, Operator op, Atom rhs): lhs{lhs}, op{op}, rhs{rhs} {}
+If::If(Atom lhs, Operator op, Atom rhs)
+    : lhs{lhs}
+    , op{op}
+    , rhs{rhs} {}
 
 auto If::parse(std::string_view input) -> ParseResult<If> {
     const auto original_input{input};
@@ -721,7 +736,8 @@ auto EndIf::parse(std::string_view input) -> ParseResult<EndIf> {
 
 // MARK: - Jump
 
-Jump::Jump(Target target): target{std::move(target)} {}
+Jump::Jump(Target target)
+    : target{std::move(target)} {}
 
 auto Jump::parse(std::string_view input) -> ParseResult<Jump> {
     const auto original_input{input};
@@ -775,7 +791,8 @@ auto Jump::parse(std::string_view input) -> ParseResult<Jump> {
 
 // MARK: - Sprite
 
-SpritePosition::SpritePosition(Value value): value{value} {}
+SpritePosition::SpritePosition(Value value)
+    : value{value} {}
 
 auto SpritePosition::parse(
     std::string_view input, const std::string_view original_input
@@ -802,9 +819,11 @@ SpriteShow::SpriteShow(
     std::filesystem::path path,
     std::optional<Transition> transition,
     std::optional<Duration> duration
-):
-    position{position}, path{std::move(path)}, transition{transition},
-    duration{duration} {
+)
+    : position{position}
+    , path{std::move(path)}
+    , transition{transition}
+    , duration{duration} {
     normalize_transition_args(this->transition, this->duration);
 }
 
@@ -881,7 +900,8 @@ auto SpriteShow::parse(
     };
 }
 
-SpriteHide::SpriteHide(SpritePosition position): position{position} {}
+SpriteHide::SpriteHide(SpritePosition position)
+    : position{position} {}
 
 auto Sprite::parse(std::string_view input) -> ParseResult<Sprite> {
     const auto original_input{input};
@@ -950,7 +970,8 @@ auto Sprite::parse(std::string_view input) -> ParseResult<Sprite> {
 
 // MARK: - Wait
 
-Wait::Wait(Duration duration): duration{duration} {}
+Wait::Wait(Duration duration)
+    : duration{duration} {}
 
 auto Wait::parse(std::string_view input) -> ParseResult<Wait> {
     const auto original_input{input};
@@ -996,8 +1017,9 @@ auto Wait::parse(std::string_view input) -> ParseResult<Wait> {
 
 // MARK: - Choice
 
-Choice::Choice(std::string_view prompt, Target target):
-    prompt{prompt}, target{std::move(target)} {}
+Choice::Choice(std::string_view prompt, Target target)
+    : prompt{prompt}
+    , target{std::move(target)} {}
 
 auto Choice::parse(std::string_view input) -> ParseResult<Choice> {
     const auto original_input{input};
@@ -1048,8 +1070,9 @@ auto Choice::parse(std::string_view input) -> ParseResult<Choice> {
 // MARK: - Dialogue
 
 // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
-Dialogue::Dialogue(std::string_view speaker, std::string_view text):
-    speaker{speaker}, text{text} {}
+Dialogue::Dialogue(std::string_view speaker, std::string_view text)
+    : speaker{speaker}
+    , text{text} {}
 
 auto Dialogue::parse(std::string_view input) -> ParseResult<Dialogue> {
     const auto original_input{input};
@@ -1127,7 +1150,8 @@ auto Dialogue::parse(std::string_view input) -> ParseResult<Dialogue> {
 
 // MARK: - Narration
 
-Narration::Narration(std::string_view value): value{value} {}
+Narration::Narration(std::string_view value)
+    : value{value} {}
 
 auto Narration::parse(std::string_view input) -> ParseResult<Narration> {
     return Narration{input};

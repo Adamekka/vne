@@ -7,8 +7,8 @@
 
 namespace engine {
 
-Engine::Engine(parser::ParsedScript script):
-    interpreter{*this, std::move(script)} {
+Engine::Engine(parser::ParsedScript script)
+    : interpreter{*this, std::move(script)} {
     InitWindow(800, 600, "Visual Novel Engine");
 
     SetTargetFPS(60);

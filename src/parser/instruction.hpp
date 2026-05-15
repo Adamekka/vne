@@ -44,7 +44,8 @@ struct Target {
     Value target;
 
     template<typename T>
-    constexpr explicit Target(T target): target{std::move(target)} {}
+    constexpr explicit Target(T target)
+        : target{std::move(target)} {}
 
     static auto parse(std::string_view input, std::string_view original_input)
         -> ParseResult<Target>;
@@ -99,7 +100,8 @@ struct Audio {
     Action action;
 
     template<typename T>
-    constexpr explicit Audio(T action): action{std::move(action)} {}
+    constexpr explicit Audio(T action)
+        : action{std::move(action)} {}
 
     static auto parse(std::string_view input) -> ParseResult<Audio>;
 };
@@ -128,7 +130,8 @@ struct Background {
     Value value;
 
     template<typename T>
-    constexpr explicit Background(T value): value{std::move(value)} {}
+    constexpr explicit Background(T value)
+        : value{std::move(value)} {}
 
     static auto parse(std::string_view input) -> ParseResult<Background>;
 };
@@ -155,7 +158,8 @@ struct Atom {
     std::variant<VariableName, EngineInt> value;
 
     template<typename T>
-    constexpr explicit Atom(T value): value{std::move(value)} {}
+    constexpr explicit Atom(T value)
+        : value{std::move(value)} {}
 
     static auto parse(std::string_view input, std::string_view original_input)
         -> ParseResult<Atom>;
@@ -244,7 +248,8 @@ struct Sprite {
     std::variant<SpriteShow, SpriteHide> value;
 
     template<typename T>
-    constexpr explicit Sprite(T value): value{std::move(value)} {}
+    constexpr explicit Sprite(T value)
+        : value{std::move(value)} {}
 
     static auto parse(std::string_view input) -> ParseResult<Sprite>;
 };
@@ -312,7 +317,8 @@ struct Instruction {
     Value value;
 
     template<typename T>
-    constexpr explicit Instruction(T value): value{std::move(value)} {}
+    constexpr explicit Instruction(T value)
+        : value{std::move(value)} {}
 };
 
 } // namespace parser
