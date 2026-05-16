@@ -47,7 +47,7 @@ She tilts her head, still smiling.
 
 > sprite show left sprites/rena_smile.png
 > bg show background_images/village_night.png fade 1.5s
-> audio stop
+> audio play music/cicadas.ogg loop
 
 Night falls too quickly.
 The cicadas stop together, as if a hand closed around the village.
