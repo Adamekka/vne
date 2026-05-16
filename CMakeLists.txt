@@ -37,6 +37,8 @@ endif()
 set(CMAKE_CXX_STANDARD 26)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+option(ENABLE_SANITIZERS "Enable AddressSanitizer and UndefinedBehaviorSanitizer" OFF)
+
 # MARK: Warnings
 
 set(VNE_CXX_FLAGS
@@ -54,6 +56,9 @@ set(VNE_CXX_FLAGS
     -Wuninitialized
     -Wvla
     -fstack-protector-strong
+)
+
+set(VNE_SANITIZER_FLAGS
     -fsanitize=address
     -fsanitize=undefined
 )
@@ -97,7 +102,12 @@ set_target_properties(visual-novel-engine PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}"
 )
 target_compile_options(visual-novel-engine PRIVATE ${VNE_CXX_FLAGS})
-target_link_options(visual-novel-engine PRIVATE -fsanitize=address -fsanitize=undefined)
+
+if(ENABLE_SANITIZERS)
+    target_compile_options(visual-novel-engine PRIVATE ${VNE_SANITIZER_FLAGS})
+    target_link_options(visual-novel-engine PRIVATE ${VNE_SANITIZER_FLAGS})
+endif()
+
 target_link_libraries(
     visual-novel-engine
     PRIVATE
