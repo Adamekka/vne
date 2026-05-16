@@ -17,10 +17,10 @@ class FontManager {
     [[nodiscard]] auto get_font() const -> const Font&;
 
   private:
-    FontManager();
+    FontManager() = default;
     ~FontManager() = default;
 
-    Font font;
+    Font font{LoadFont("font.ttf")};
 };
 
 } // namespace engine
