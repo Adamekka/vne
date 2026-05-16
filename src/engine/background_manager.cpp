@@ -1,5 +1,4 @@
 #include "background_manager.hpp"
-#include <algorithm>
 
 namespace engine {
 
@@ -20,13 +19,10 @@ auto BackgroundManager::update() -> void {
             .width = static_cast<float>(texture.width),
             .height = static_cast<float>(texture.height)
           };
+          Rectangle dest{BackgroundManager::fit_texture_to_window(texture)};
 
-          const Rectangle dest{
-            .x = x,
-            .y = y,
-            .width = static_cast<float>(GetScreenWidth()),
-            .height = static_cast<float>(GetScreenHeight())
-          };
+          dest.x += x;
+          dest.y += y;
 
           const Vector2 origin{.x = 0, .y = 0};
 
@@ -42,8 +38,9 @@ auto BackgroundManager::update() -> void {
 
         progress = std::min(progress, 1.0);
 
-        const float screen_width{static_cast<float>(GetScreenWidth())};
-        const float screen_height{static_cast<float>(GetScreenHeight())};
+        const Rectangle transition_rect{
+          BackgroundManager::fit_texture_to_window(transition.to.get())
+        };
         const float remaining{static_cast<float>(1.0 - progress)};
 
         switch (transition.transition) {
@@ -60,28 +57,40 @@ auto BackgroundManager::update() -> void {
             case parser::Transition::Value::SlideInTop: {
                 draw_background(transition.from.get(), 0, 0, WHITE);
                 draw_background(
-                    transition.to.get(), 0, -screen_height * remaining, WHITE
+                    transition.to.get(),
+                    0,
+                    -transition_rect.height * remaining,
+                    WHITE
                 );
             } break;
 
             case parser::Transition::Value::SlideInBottom: {
                 draw_background(transition.from.get(), 0, 0, WHITE);
                 draw_background(
-                    transition.to.get(), 0, screen_height * remaining, WHITE
+                    transition.to.get(),
+                    0,
+                    transition_rect.height * remaining,
+                    WHITE
                 );
             } break;
 
             case parser::Transition::Value::SlideInLeft: {
                 draw_background(transition.from.get(), 0, 0, WHITE);
                 draw_background(
-                    transition.to.get(), -screen_width * remaining, 0, WHITE
+                    transition.to.get(),
+                    -transition_rect.width * remaining,
+                    0,
+                    WHITE
                 );
             } break;
 
             case parser::Transition::Value::SlideInRight: {
                 draw_background(transition.from.get(), 0, 0, WHITE);
                 draw_background(
-                    transition.to.get(), screen_width * remaining, 0, WHITE
+                    transition.to.get(),
+                    transition_rect.width * remaining,
+                    0,
+                    WHITE
                 );
             } break;
         }
@@ -154,6 +163,44 @@ auto BackgroundManager::show(const parser::BackgroundShow& background_info)
 auto BackgroundManager::hide() -> void {
     this->current_background = std::nullopt;
     this->current_transition = std::nullopt;
+}
+
+[[nodiscard]] auto BackgroundManager::current_background_bounds() const
+    -> std::optional<Rectangle> {
+    if (this->current_transition.has_value()) {
+        const Texture2D& texture{this->current_transition.value().to.get()};
+
+        return BackgroundManager::fit_texture_to_window(texture);
+    }
+
+    if (!this->current_background.has_value()) {
+        return std::nullopt;
+    }
+
+    const Texture2D& texture{this->current_background.value().get()};
+
+    return BackgroundManager::fit_texture_to_window(texture);
+}
+
+[[nodiscard]] auto
+BackgroundManager::fit_texture_to_window(const Texture2D& texture)
+    -> Rectangle {
+    const float screen_width{static_cast<float>(GetScreenWidth())};
+    const float screen_height{static_cast<float>(GetScreenHeight())};
+    const float texture_width{static_cast<float>(texture.width)};
+    const float texture_height{static_cast<float>(texture.height)};
+    const float scale{
+      std::min(screen_width / texture_width, screen_height / texture_height)
+    };
+    const float width{texture_width * scale};
+    const float height{texture_height * scale};
+
+    return Rectangle{
+      .x = (screen_width - width) / 2.0f,
+      .y = (screen_height - height) / 2.0f,
+      .width = width,
+      .height = height
+    };
 }
 
 BackgroundManager::~BackgroundManager() {

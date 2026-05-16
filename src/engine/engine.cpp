@@ -9,6 +9,7 @@ namespace engine {
 
 Engine::Engine(parser::ParsedScript script)
     : interpreter{*this, std::move(script)} {
+    SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     InitWindow(800, 600, "Visual Novel Engine");
 
     SetTargetFPS(60);

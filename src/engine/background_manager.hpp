@@ -24,7 +24,13 @@ class BackgroundManager {
     auto show(const parser::BackgroundShow& background_info) -> void;
     auto hide() -> void;
 
+    [[nodiscard]] auto current_background_bounds() const
+        -> std::optional<Rectangle>;
+
   private:
+    [[nodiscard]] static auto fit_texture_to_window(const Texture2D& texture)
+        -> Rectangle;
+
     struct BackgroundTransition {
         std::reference_wrapper<Texture2D> from;
         std::reference_wrapper<Texture2D> to;

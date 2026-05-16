@@ -1,4 +1,5 @@
 #include "sprite_manager.hpp"
+#include "background_manager.hpp"
 
 namespace engine {
 
@@ -8,6 +9,10 @@ auto SpriteManager::instance() -> SpriteManager& {
 }
 
 auto SpriteManager::update() -> void {
+    // Sprites are authored for the initial scene height; background texture
+    // resolution only affects image quality, not layout scale.
+    constexpr float AUTHORED_SCENE_HEIGHT{576.0f};
+
     const auto draw_sprite{
       [](const Texture2D& texture,
          const parser::SpritePosition::Value position,
@@ -16,32 +21,51 @@ auto SpriteManager::update() -> void {
          const Color tint) -> void {
           const float screen_width{static_cast<float>(GetScreenWidth())};
           const float screen_height{static_cast<float>(GetScreenHeight())};
-          const float texture_width{static_cast<float>(texture.width)};
-          const float texture_height{static_cast<float>(texture.height)};
+          Rectangle scene{
+            .x = 0, .y = 0, .width = screen_width, .height = screen_height
+          };
 
-          float x = [position, screen_width, texture_width]() -> float {
+          if (const auto background_bounds{
+                BackgroundManager::instance().current_background_bounds()
+              }) {
+              scene = background_bounds.value();
+          }
+
+          const float scale{scene.height / AUTHORED_SCENE_HEIGHT};
+
+          const float texture_width{static_cast<float>(texture.width) * scale};
+          const float texture_height{
+            static_cast<float>(texture.height) * scale
+          };
+
+          float x = [position, scene, texture_width]() -> float {
               switch (position) {
                   case parser::SpritePosition::Value::Left: {
-                      return (screen_width * 0.25f) - (texture_width / 2.0f);
+                      return scene.x + (scene.width * 0.25f)
+                           - (texture_width / 2.0f);
                   } break;
 
                   case parser::SpritePosition::Value::Center: {
-                      return (screen_width - texture_width) / 2.0f;
+                      return scene.x + ((scene.width - texture_width) / 2.0f);
                   } break;
 
                   case parser::SpritePosition::Value::Right: {
-                      return (screen_width * 0.75f) - (texture_width / 2.0f);
+                      return scene.x + (scene.width * 0.75f)
+                           - (texture_width / 2.0f);
                   } break;
               }
           }();
 
           const Rectangle source{
-            .x = 0, .y = 0, .width = texture_width, .height = texture_height
+            .x = 0,
+            .y = 0,
+            .width = static_cast<float>(texture.width),
+            .height = static_cast<float>(texture.height)
           };
 
           const Rectangle dest{
             .x = x + offset_x,
-            .y = screen_height - texture_height + offset_y,
+            .y = scene.y + scene.height - texture_height + offset_y,
             .width = texture_width,
             .height = texture_height
           };
@@ -91,6 +115,15 @@ auto SpriteManager::update() -> void {
 
           const float screen_width{static_cast<float>(GetScreenWidth())};
           const float screen_height{static_cast<float>(GetScreenHeight())};
+          Rectangle scene{
+            .x = 0, .y = 0, .width = screen_width, .height = screen_height
+          };
+
+          if (const auto background_bounds{
+                BackgroundManager::instance().current_background_bounds()
+              }) {
+              scene = background_bounds.value();
+          }
           const auto draw_from{[&draw_sprite, position, transition]() -> void {
               if (!transition->from.has_value()) {
                   return;
@@ -119,7 +152,7 @@ auto SpriteManager::update() -> void {
                       transition->to.get(),
                       position,
                       0,
-                      -screen_height * remaining,
+                      -scene.height * remaining,
                       WHITE
                   );
               } break;
@@ -130,7 +163,7 @@ auto SpriteManager::update() -> void {
                       transition->to.get(),
                       position,
                       0,
-                      screen_height * remaining,
+                      scene.height * remaining,
                       WHITE
                   );
               } break;
@@ -140,7 +173,7 @@ auto SpriteManager::update() -> void {
                   draw_sprite(
                       transition->to.get(),
                       position,
-                      -screen_width * remaining,
+                      -scene.width * remaining,
                       0,
                       WHITE
                   );
@@ -151,7 +184,7 @@ auto SpriteManager::update() -> void {
                   draw_sprite(
                       transition->to.get(),
                       position,
-                      screen_width * remaining,
+                      scene.width * remaining,
                       0,
                       WHITE
                   );
