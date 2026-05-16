@@ -11,4 +11,8 @@ auto FontManager::instance() -> FontManager& {
     return this->font;
 }
 
+FontManager::~FontManager() {
+    UnloadFont(this->font);
+}
+
 } // namespace engine

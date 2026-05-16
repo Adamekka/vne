@@ -18,7 +18,7 @@ class FontManager {
 
   private:
     FontManager() = default;
-    ~FontManager() = default;
+    ~FontManager();
 
     Font font{LoadFont("font.ttf")};
 };
