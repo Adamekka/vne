@@ -1,35 +1,59 @@
 # visual-novel-engine
 
-This project requires a recent Clang toolchain.
+A C++/raylib visual novel engine that runs Markdown script packages.
 
-## NixOS / Linux
+The script format is defined in the [VNE specification v1](spec/v1/spec.md). Start there when writing scripts or changing parser/runtime behavior.
+
+## Quick Start
+
+Configure the project once, then run the bundled example:
+
+```sh
+cmake .
+./run-example
+```
+
+`./run-example` builds the engine and runs `spec/v1/example` from that directory so the example's relative asset paths resolve correctly.
+
+## Script Packages
+
+A script package is a directory with a `main.md` entry point. Every script file starts with the version header:
+
+```md
+<!-- v1 -->
+```
+
+Useful references:
+
+- [Specification](spec/v1/spec.md)
+- [Full example](spec/v1/example/main.md)
+- [Hello world example](spec/v1/hello-world/main.md)
+
+Run a package or a single script file with:
+
+```sh
+./visual-novel-engine <project-path>
+```
+
+If the path is a directory, the engine loads `<project-path>/main.md`.
+
+## Build
+
+### NixOS / Linux
 
 Requirements:
 
 - Nix with `nix-command` and `flakes` enabled
 
-Setup and build:
+Configure and build:
 
 ```sh
-nix develop "path:."
-cmake -B build
-cmake --build build
+nix develop
+cmake .
+cmake --build .
 ```
 
-Run the binary:
-
-```sh
-./visual-novel-engine
-```
-
-Build the package through Nix:
-
-```sh
-nix build "path:."
-./result/bin/visual-novel-engine
-```
-
-## macOS
+### macOS
 
 Install the toolchain:
 
@@ -40,23 +64,16 @@ brew install llvm cmake
 Configure and build:
 
 ```sh
-cmake -B build \
-  -DCMAKE_C_COMPILER=/opt/homebrew/opt/llvm/bin/clang \
-  -DCMAKE_CXX_COMPILER=/opt/homebrew/opt/llvm/bin/clang++ \
-  -DCMAKE_CXX_STANDARD_LIBRARY=libc++ \
-  -DCMAKE_OSX_SYSROOT=macosx
-cmake --build build
+cmake .
+cmake --build .
 ```
+
+## Project Layout
+
+- `src/parser`: Markdown script parsing and instruction model
+- `src/engine`: runtime execution, dialogue, choices, audio, sprites, and backgrounds
+- `spec/v1`: v1 script specification and examples
 
 ## Windows
 
-Goyslop OS not supported and never will be.
-
-## LSP / clangd
-
-- VS Code is already configured to use `scripts/run-clangd`
-- Install the `llvm-vs-code-extensions.vscode-clangd` extension
-- Run a configure step first so the repo-root `compile_commands.json` symlink exists
-- If clangd shows stale diagnostics, restart clangd or reload the editor window
-
-For other editors, point clangd at `scripts/run-clangd`, or run clangd from the repo root so it picks up `compile_commands.json` automatically.
+Microslop OS not supported and never will be.
