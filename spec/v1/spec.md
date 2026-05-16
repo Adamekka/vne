@@ -6,6 +6,7 @@ This specification defines the syntax and deterministic execution rules for the 
 
 - **Version Header:** Every script file must declare its format version on line 1 as `<!-- v1 -->`. This header is metadata only and is never treated as an executable instruction.
 - **Entry Point:** `main.md` is the required entry point for a script package. A fresh run begins at the top of `main.md`, immediately after the version header, and then follows normal top-to-bottom execution.
+- **Required Font:** The script package root must include `font.ttf` next to `main.md`. The runtime loads this file as `font.ttf` relative to the process working directory for dialogue, narration, and choice text.
 - **Line-Based Tokenization:** Every instruction, conditional, or text block is evaluated on a single-line basis (separated by `\n`).
 - **Top-to-Bottom Execution:** Execution advances sequentially unless a `jmp` command changes the next line or execution pauses for Choices, Waits, or User Input.
 - **Whitespace:** Leading and trailing whitespace on a line is ignored. Empty lines are discarded.
